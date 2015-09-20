@@ -1,5 +1,7 @@
 <?php
 require_once("../globals.php");
+include_once("$srcdir/pid.inc");
+  setpid($_GET['pid']);
 ?>
 <?php
     session_start();
@@ -20,7 +22,8 @@ and open the template in the editor.
     </head>
     <body>
         <?php
-        //echo $_SESSION["id"];
+        echo ("pid: ");
+        echo $_SESSION["pid"];
         ?>
         Status Updated As:<br>
         <p>
@@ -55,5 +58,15 @@ and open the template in the editor.
 
         ?>
         <a href="sentinel.php">Back</a>
+        <a href="../forms/newpatient/new.php">test encounter</a>
+
+        <script>
+        <?php
+            if($_POST['status'] == "Reviewed and no further action needed"){
+                echo (""
+                        . "window.open('../forms/newpatient/new.php','Encounter','width=1100,height=300');");
+            }
+        ?>
+        </script>
     </body>
 </html>

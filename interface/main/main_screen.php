@@ -123,7 +123,7 @@ if (!empty($GLOBALS['gbl_nav_area_width'])) $nav_area_width = $GLOBALS['gbl_nav_
                 url : "updateCategory.php",
                 success : function(data){
                     updatedCount = data;
-                    alert(updatedCount);
+                    //alert(updatedCount);
                 }
             });
     }

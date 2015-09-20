@@ -1,4 +1,27 @@
 <?php
+        echo ("pstatus:".$_POST['pstatus']);
+        echo ($_POST['pc_eid']);
+            if($_POST['pstatus'] != ""){
+                echo ("pstatus:".$_POST['pstatus']);
+                echo ($_POST['pc_eid']);
+                
+                $servername = "localhost";
+                $username = "root";
+                $password = "root";
+                $dbname = "openemr";
+                if ($conn->connect_error) {
+                    die("Connection failed: " . $conn->connect_error);
+                    } 
+                // Create connection
+                $conn = new mysqli($servername, $username, $password, $dbname);
+ 
+                $sql = "UPDATE openemr_postcalendar_events SET pc_apptstatus = '".$_POST['pstatus']."' WHERE "
+                         . " pc_eid = ".$_POST['pc_eid'];
+               
+                mysqli_query($conn, $sql);
+            }
+        ?>
+<?php
 // Copyright (C) 2005-2010 Rod Roark <rod@sunsetsystems.com>
 //
 // This program is free software; you can redistribute it and/or
@@ -398,16 +421,8 @@ if ($_POST['form_refresh'] || $_POST['form_orderby']) {
 		<td class="detail">&nbsp;<?php echo text(xl_appt_category($appointment['pc_catname'])) ?></td>
 		
 		<td class="detail">&nbsp;
-                    <form method="post" action="appointments_report.php">
-                        <select name="status" value="
-                            <?php
-                                    //Appointment Status
-                                    if($pc_apptstatus != ""){
-                                            $frow['data_type']=1;
-                                            $frow['list_id']='apptstat';
-                                            generate_print_field($frow, $pc_apptstatus);
-                                    }
-                            ?>">
+                    <form method="post" action="appointments_report.php" >                       
+                        <select name="pstatus">
                             <option><?php
                                     //Appointment Status
                                     if($pc_apptstatus != ""){
@@ -416,22 +431,24 @@ if ($_POST['form_refresh'] || $_POST['form_orderby']) {
                                             generate_print_field($frow, $pc_apptstatus);
                                     }
                             ?></option>
-                            <option>Called and confirmed</option>
-                            <option>Called and left message</option>
-                            <option>Called and spoke with significant other</option>
-                            <option>Called and number unavailable</option>
-                            <option>Called and number disconnected</option>
-                            <option>Called and wrong number</option>
-                            <option>Texted and confirmed</option>
-                            <option>Texted and no response</option>
-                            <option>Other</option>
+                            <option value="*">Called and confirmed</option>
+                            <option value="+">Called and left message</option>
+                            <option value="x">Called and spoke with significant other</option>
+                            <option value="?">Called and number unavailable</option>
+                            <option value="@">Arrived</option>
+                            <option value="~">Called and number disconnected</option>
+                            <option value="!">Called and wrong number</option>
+                            <option value="#">Texted and confirmed</option>
+                            <option value="<">Texted and no response</option>
+                            <option value=">">Other</option>
                         </select>
-                        <button type="submit">submit</button>
-                    </form>
-			
+                        <button type="submit" name = "pc_eid" value="<?php
+                            echo (text($appointment['pc_eid']));
+                        ?>">save</button>
+                    </form>			
 		</td>
 	</tr>
-
+        
     <?php if ($patient_id && $incl_reminders) {
         // collect reminders first, so can skip it if empty
         $rems = fetch_reminders ($patient_id, $appointment['pc_eventDate']);
@@ -468,6 +485,7 @@ if ($_POST['form_refresh'] || $_POST['form_orderby']) {
 		<td colspan="10" align="left"><?php echo xlt('Total number of appointments'); ?>:&nbsp;<?php echo text($totalAppontments);?></td>
 	</tr>
 	</tbody>
+        
 </table>
 </div>
 <!-- end of search results --> <?php } else { ?>

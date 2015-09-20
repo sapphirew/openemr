@@ -14,74 +14,74 @@ and open the template in the editor.
         <title>sentinel alert!</title>
         <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
         <style type="text/css">
-        @import "../../library/js/datatables/media/css/demo_page.css";
-        @import "../../library/js/datatables/media/css/demo_table.css";
+            @import "../../library/js/datatables/media/css/demo_page.css";
+            @import "../../library/js/datatables/media/css/demo_table.css";
         </style>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
     </head>
     <body>
         <a href="../reports/appointments_report.php">appointments_report.php</a>
+        <a href="../forms/newpatient/new.php">new encounter.php</a>
+
         <h3>ALERT</h3>
         <?php
-            $servername = "localhost";
-            $username = "root";
-            $password = "root";
-            $dbname = "openemr";
+        $servername = "localhost";
+        $username = "root";
+        $password = "root";
+        $dbname = "openemr";
+        
+        // Create connection
+        $conn = new mysqli($servername, $username, $password, $dbname);
 
-
-            // Create connection
-            $conn = new mysqli($servername, $username, $password, $dbname);
-
-            // Check connection
-            if ($conn->connect_error) {
-                die("Connection failed: " . $conn->connect_error);
-            } 
-            $sql = "SELECT pid, fname, lname, phone_cell, street, usertext1, date, status FROM patient_data";
-            $result = mysqli_query($conn, $sql);
-            ?>
+        // Check connection
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+        $sql = "SELECT pid, fname, lname, phone_cell, street, usertext1, date, status FROM patient_data";
+        $result = mysqli_query($conn, $sql);
+        ?>
         <table class="table striped hovered dataTables">
             <thead>
-            <tr>
-                <th>ID</th>
-                <th>first name</th>
-                <th>last name</th>
-                <th>contact info</th>
-                <th>address</th>
-                <th>description</th>
-                <th>date</th>                              
-                <th>status</th>                              
-            </tr>
-        </thead>
+                <tr>
+                    <th>ID</th>
+                    <th>first name</th>
+                    <th>last name</th>
+                    <th>contact info</th>
+                    <th>address</th>
+                    <th>description</th>
+                    <th>date</th>                              
+                    <th>status</th>                              
+                </tr>
+            </thead>
 
             <tbody>
                 <?php
                 if (mysqli_num_rows($result) > 0) {
                     // output data of each row                    
                     //$moreAlert = 0;    
-                    while($row = mysqli_fetch_array($result)) {
-                        if (htmlentities($row['status'] == "")){
-                      //      $moreAlert = 1;
+                    while ($row = mysqli_fetch_array($result)) {
+                        if (htmlentities($row['status'] == "")) {
+                            //      $moreAlert = 1;
                             echo "<tr><td>" . htmlentities($row['pid']) . "</td>";
-                            echo "<td><a href=\"#\" onClick=\"window.open('../patient_file/summary/demographics.php?set_pid=".htmlentities($row['pid'])."','status_window','width=950,height=600')\" >" . htmlentities($row['fname']) . "</a></td>";
+                            echo "<td><a href=\"#\" onClick=\"window.open('../patient_file/summary/demographics.php?set_pid=" . htmlentities($row['pid']) . "','status_window','width=950,height=600')\" >" . htmlentities($row['fname']) . "</a></td>";
                             echo "<td>" . htmlentities($row['lname']) . "</td>";
                             echo "<td>" . htmlentities($row['phone_cell']) . "</td>";
                             echo "<td>" . htmlentities($row['street']) . "</td>";
                             echo "<td>" . htmlentities($row['usertext1']) . "</td>";
                             echo "<td>" . htmlentities($row['date']) . "</td>";
-                            echo "<td>" . "<form method=\"post\" action=\"patientRecord.php?pid=".htmlentities($row['pid'])."\">
+                            echo "<td>" . "<form method=\"post\" action=\"patientRecord.php?pid=" . htmlentities($row['pid']) . "\">
                             <select name=\"status\">
                             <option value=\"\">--Select Status--</option>
-                            <option value=\"contacted patient\">contacted patient</option>
-                            <option value=\"wrote notes\">wrote notes</option>
-                            <option value=\"prescribed further tests\">prescribed further tests</option>
+                            <option value=\"Reviewed and no further action needed\">Reviewed and no further action needed</option>
+                            <option value=\"Reviewed and Notified Patient\">Reviewed and Notified Patient</option>
                             </select>
                             <input type=\"submit\" >
                             </form>" . "</td></tr>";
                         }
                     }
-                }
-                else{
+                } else {
+                    
                 }
                 ?>
             </tbody>
@@ -89,10 +89,9 @@ and open the template in the editor.
         <?php
         $sql = "SELECT pid FROM patient_data WHERE status = ''";
         $result = mysqli_query($conn, $sql);
-        if (mysqli_num_rows($result) > 0){
+        if (mysqli_num_rows($result) > 0) {
             
-        }
-        else {
+        } else {
             echo "No more sentinel alert.";
         }
         ?>
@@ -101,12 +100,12 @@ and open the template in the editor.
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_array($result);
         echo htmlentities($row['maxpid']);
-        
+
         //echo $maxpid;
         ?>
         <!--<a href="../patient_file/summary/demographics.php?set_pid=1" target="main_screen#Main">demographic</a>-->
         <script>
-//        var workIsDone = <?php //echo $moreAlert ?>;
+//        var workIsDone = <?php //echo $moreAlert  ?>;
 //
 //        window.onbeforeunload = confirmBrowseAway;
 //
@@ -119,6 +118,6 @@ and open the template in the editor.
 //        }
 
         </script>
-        
+
     </body>
 </html>
